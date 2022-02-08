@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs';
+import fse from 'fs-extra'
 import { getInput, setFailed, startGroup, endGroup, debug } from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { exec } from '@actions/exec';
@@ -69,9 +70,17 @@ async function run(octokit, context, token, privateConfig) {
 	const workDir = getInput('cwd')
 	if (!fs.existsSync(workDir)){
 		fs.mkdirSync(workDir);
+		fse.copySync(process.cwd(), process.cwd() + workDir.replace(".", ""), {
+			overwrite: true,
+			filter: file => file !== process.cwd() + workDir.replace(".", "")
+		})
 		process.chdir(workDir)
 		console.log(`change dir to ${workDir}`)
 	} else {
+		fse.copySync(process.cwd(), process.cwd() + workDir.replace(".", ""), {
+			overwrite: true,
+			filter: file => file !== process.cwd() + workDir.replace(".", "")
+		})
 		process.chdir(workDir)
 		console.log(`change dir to ${workDir}`)
 	}
