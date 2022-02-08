@@ -72,14 +72,14 @@ async function run(octokit, context, token, privateConfig) {
 		fs.mkdirSync(workDir);
 		fse.copySync(process.cwd(), process.cwd() + workDir.replace(".", ""), {
 			overwrite: true,
-			filter: file => file !== process.cwd() + workDir.replace(".", "")
+			filter: path => path.indexOf(workDir.replace("./", "")) > -1
 		})
 		process.chdir(workDir)
 		console.log(`change dir to ${workDir}`)
 	} else {
 		fse.copySync(process.cwd(), process.cwd() + workDir.replace(".", ""), {
 			overwrite: true,
-			filter: file => file !== process.cwd() + workDir.replace(".", "")
+			filter: path => path.indexOf(workDir.replace("./", "")) > -1
 		})
 		process.chdir(workDir)
 		console.log(`change dir to ${workDir}`)
