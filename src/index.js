@@ -127,7 +127,11 @@ async function run(octokit, context, token, privateConfig) {
 	endGroup();
 
 	startGroup(`[base] Build using ${npm}`);
-	await exec(`${npm} run ${buildScript}`);
+	if (yarnLock) {
+		await exec(`yarn run ${buildScript}`);
+	} else {
+		await exec(`${npm} run ${buildScript}`);
+	}
 	endGroup();
 	// In case the build step alters a JSON-file, ....
 	await exec(`git reset --hard`);
