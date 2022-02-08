@@ -46,6 +46,13 @@ async function run(octokit, context, token, privateConfig) {
 		stripHash: stripHash(getInput('strip-hash'))
 	});
 
+	const targetPlugin = new SizePlugin({
+		compression: getInput('compression'),
+		pattern: getInput('target-pattern') || '**/dist/**/*.{js,mjs,cjs}',
+		exclude: getInput('target-exclude') || '{**/*.map,**/node_modules/**}',
+		stripHash: stripHash(getInput('strip-hash'))
+	});
+
 	const buildScript = getInput('build-script') || 'build';
 	
 	console.log(`current dir ${process.cwd()}`)
@@ -65,16 +72,6 @@ async function run(octokit, context, token, privateConfig) {
 	const newSizes = await plugin.readFromDisk(process.cwd());
 	console.log("new size:")
 	console.log(newSizes)
-
-	const workDir = getInput('cwd')
-	if (!fs.existsSync(workDir)){
-		process.chdir(workDir)
-		console.log(`change dir to ${workDir}`)
-	} else {
-		process.chdir(workDir)
-		console.log(`change dir to ${workDir}`)
-	}
-	console.log(`current dir ${process.cwd()}`)
 
 	startGroup(`[base] Checkout target branch`);
 	try {
@@ -132,27 +129,16 @@ async function run(octokit, context, token, privateConfig) {
 	startGroup(`[base] Build using ${npm}`);
 	await exec(`${npm} run ${buildScript}`);
 	endGroup();
-	fs.readdir(process.cwd(), function (err, files) {
-		//handling error
-		if (err) {
-			return console.log('Unable to scan directory: ' + err);
-		} 
-		//listing all files using forEach
-		files.forEach(function (file) {
-			// Do whatever you want to do with the file
-			console.log(file); 
-		});
-	});
 	// In case the build step alters a JSON-file, ....
 	await exec(`git reset --hard`);
 	console.log("get old sizes")
-	const oldSizes = await plugin.readFromDisk(process.cwd());
+	const oldSizes = await targetPlugin.readFromDisk(process.cwd());
 	console.log("old sizes:")
 	console.log(oldSizes)
-	const diff = await plugin.getDiff(oldSizes, newSizes);
+	const diff = await targetPlugin.getDiff(oldSizes, newSizes);
 
 	startGroup(`Size Differences:`);
-	const cliText = await plugin.printSizes(diff);
+	const cliText = await targetPlugin.printSizes(diff);
 	console.log(cliText);
 	endGroup();
 
