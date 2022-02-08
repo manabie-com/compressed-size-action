@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs';
-import fse from 'fs-extra'
 import { getInput, setFailed, startGroup, endGroup, debug } from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { exec } from '@actions/exec';
@@ -67,22 +66,11 @@ async function run(octokit, context, token, privateConfig) {
 	console.log("new size:")
 	console.log(newSizes)
 
-	const originDir = process.cwd()
 	const workDir = getInput('cwd')
-	process.chdir("../")
 	if (!fs.existsSync(workDir)){
-		fs.mkdirSync(workDir);
-		fse.copySync(originDir, process.cwd() + workDir.replace(".", ""), {
-			overwrite: true,
-			filter: path => path.indexOf(workDir.replace("./", "")) > -1
-		})
 		process.chdir(workDir)
 		console.log(`change dir to ${workDir}`)
 	} else {
-		fse.copySync(originDir, process.cwd() + workDir.replace(".", ""), {
-			overwrite: true,
-			filter: path => path.indexOf(workDir.replace("./", "")) > -1
-		})
 		process.chdir(workDir)
 		console.log(`change dir to ${workDir}`)
 	}
@@ -144,7 +132,17 @@ async function run(octokit, context, token, privateConfig) {
 	startGroup(`[base] Build using ${npm}`);
 	await exec(`${npm} run ${buildScript}`);
 	endGroup();
-
+	fs.readdir(process.cwd(), function (err, files) {
+		//handling error
+		if (err) {
+			return console.log('Unable to scan directory: ' + err);
+		} 
+		//listing all files using forEach
+		files.forEach(function (file) {
+			// Do whatever you want to do with the file
+			console.log(file); 
+		});
+	});
 	// In case the build step alters a JSON-file, ....
 	await exec(`git reset --hard`);
 	console.log("get old sizes")
