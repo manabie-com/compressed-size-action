@@ -127,8 +127,8 @@ async function run(octokit, context, token, privateConfig) {
 	endGroup();
 
 	startGroup(`[base] Build using ${npm}`);
-	if (yarnLock) {
-		await exec(`yarn run ${buildScript}`);
+	if (yarnLock && getInput('build-script')) {
+		await exec(buildScript);
 	} else {
 		await exec(`${npm} run ${buildScript}`);
 	}
