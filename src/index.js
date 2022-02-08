@@ -67,17 +67,19 @@ async function run(octokit, context, token, privateConfig) {
 	console.log("new size:")
 	console.log(newSizes)
 
+	const originDir = process.cwd()
 	const workDir = getInput('cwd')
+	process.chdir("../")
 	if (!fs.existsSync(workDir)){
 		fs.mkdirSync(workDir);
-		fse.copySync(process.cwd(), process.cwd() + workDir.replace(".", ""), {
+		fse.copySync(originDir, process.cwd() + workDir.replace(".", ""), {
 			overwrite: true,
 			filter: path => path.indexOf(workDir.replace("./", "")) > -1
 		})
 		process.chdir(workDir)
 		console.log(`change dir to ${workDir}`)
 	} else {
-		fse.copySync(process.cwd(), process.cwd() + workDir.replace(".", ""), {
+		fse.copySync(originDir, process.cwd() + workDir.replace(".", ""), {
 			overwrite: true,
 			filter: path => path.indexOf(workDir.replace("./", "")) > -1
 		})
