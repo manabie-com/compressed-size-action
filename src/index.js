@@ -1,5 +1,4 @@
 import path from 'path';
-import fs from 'fs';
 import { getInput, setFailed, startGroup, endGroup, debug } from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { exec } from '@actions/exec';
@@ -13,7 +12,7 @@ import { fileExists, diffTable, toBool, stripHash } from './utils.js';
  * @param {ActionContext} context 
  * @param {string} token 
  */
-async function run(octokit, context, token, privateConfig) {
+async function run(octokit, context, token) {
 	const { owner, repo, number: pull_number } = context.issue;
 
 	// const pr = (await octokit.pulls.get({ owner, repo, pull_number })).data;
