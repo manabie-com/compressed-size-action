@@ -31,10 +31,20 @@ inputs:
   minimum-change-threshold:
     description: 'Consider files with changes below this threshold as unchanged. Specified in bytes.'
     default: 1
+  build-folder: 
+    description: 'remove build folder of current build branch'
   pattern:
     description: 'minimatch pattern of files to track'
     default:  '**/dist/**/*.js'
   exclude:
+    description: 'minimatch pattern of files NOT to track'
+    default: '{**/*.map,**/node_modules/**}'
+  target-build-folder: 
+    description: 'remove build folder of current build branch'
+  target-pattern:
+    description: 'minimatch pattern of files to track'
+    default:  '**/dist/**/*.js'
+  target-exclude:
     description: 'minimatch pattern of files NOT to track'
     default: '{**/*.map,**/node_modules/**}'
   cwd:
