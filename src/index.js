@@ -43,14 +43,14 @@ async function run(octokit, context, token, privateConfig) {
 		compression: getInput('compression'),
 		pattern: getInput('pattern') || '**/dist/**/*.{js,mjs,cjs}',
 		exclude: getInput('exclude') || '{**/*.map,**/node_modules/**}',
-		stripHash: stripHash(getInput('strip-hash'))
+		stripHash: stripHash(getInput('strip-hash'), getInput('build-folder'))
 	});
 
 	const targetPlugin = new SizePlugin({
 		compression: getInput('compression'),
 		pattern: getInput('target-pattern') || '**/dist/**/*.{js,mjs,cjs}',
 		exclude: getInput('target-exclude') || '{**/*.map,**/node_modules/**}',
-		stripHash: stripHash(getInput('strip-hash'))
+		stripHash: stripHash(getInput('strip-hash'), getInput('target-build-folder'))
 	});
 
 	const buildScript = getInput('build-script') || 'build';
@@ -127,7 +127,7 @@ async function run(octokit, context, token, privateConfig) {
 	endGroup();
 
 	startGroup(`[base] Build using ${npm}`);
-	if (yarnLock && getInput('build-script')) {
+	if (getInput('build-script')) {
 		await exec(buildScript);
 	} else {
 		await exec(`${npm} run ${buildScript}`);
