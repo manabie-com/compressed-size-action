@@ -14,6 +14,9 @@ inputs:
   build-script:
     description: 'The npm-script to run that builds your project'
     default: 'build'
+  custom-build-script:
+    description: 'The script to run that builds your project: Eg: yarn build'
+    default: ''
   compression:
     description: 'The compression algorithm to use: "gzip" or "brotli"'
   show-total:
@@ -31,20 +34,10 @@ inputs:
   minimum-change-threshold:
     description: 'Consider files with changes below this threshold as unchanged. Specified in bytes.'
     default: 1
-  build-folder: 
-    description: 'remove build folder of current build branch'
   pattern:
     description: 'minimatch pattern of files to track'
     default:  '**/dist/**/*.js'
   exclude:
-    description: 'minimatch pattern of files NOT to track'
-    default: '{**/*.map,**/node_modules/**}'
-  target-build-folder: 
-    description: 'remove build folder of current build branch'
-  target-pattern:
-    description: 'minimatch pattern of files to track'
-    default:  '**/dist/**/*.js'
-  target-exclude:
     description: 'minimatch pattern of files NOT to track'
     default: '{**/*.map,**/node_modules/**}'
   cwd:

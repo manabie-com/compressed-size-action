@@ -18,15 +18,11 @@ export async function fileExists(filename) {
  * @param {string=} regex
  * @returns {(((fileName: string) => string) | undefined)}
  */
-export function stripHash(regex, buildFolder) {
+export function stripHash(regex) {
 	if (regex) {
 		console.log(`Stripping hash from build chunks using '${regex}' pattern.`);
 		return function (fileName) {
-			let name = fileName
-			if(buildFolder) {
-				name = name.replace(buildFolder, "")
-			}
-			return name.replace(new RegExp(regex), (str, ...hashes) => {
+			return fileName.replace(new RegExp(regex), (str, ...hashes) => {
 				hashes = hashes.slice(0, -2).filter((c) => c != null);
 				if (hashes.length) {
 					for (let i = 0; i < hashes.length; i++) {
