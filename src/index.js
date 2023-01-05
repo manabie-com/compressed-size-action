@@ -29,7 +29,7 @@ async function run(octokit, context, token) {
 	} else if (context.eventName == 'pull_request' || context.eventName == 'pull_request_target') {
 		const pr = context.payload.pull_request;
 		baseSha = pr.base.sha;
-		baseRef = pr.base.ref;
+		baseRef = "origin/" + pr.base.ref;
 
 		console.log(`PR #${pull_number} is targeted at ${baseRef} (${baseRef})`);
 	} else {
